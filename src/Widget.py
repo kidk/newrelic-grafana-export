@@ -42,11 +42,10 @@ class Widget:
 
                 if 'fieldConfig' in widget and 'defaults' in widget['fieldConfig'] and 'max' in widget['fieldConfig']['defaults']:
                     limit = widget['fieldConfig']['defaults']['max']
-                '''try:
-                    limit = panel['options']['fieldOptions']['defaults']['max']
-                except KeyError:
-                        # Don't catch exception here and throw error because limit is manadatory for bullet viz
-                        limit = panel['gauge']['maxValue']'''
+
+                if 'options' in widget and 'fieldOptions' in widget['options'] and 'defaults' in widget['options']['fieldOptions'] and 'max' in widget['options']['fieldOptions']['defaults']:
+                    limit = widget['options']['fieldOptions']['defaults']['max']
+
             elif self.panelType == 'table':
                 self.visualisation = "viz.table"
             else:
@@ -72,7 +71,8 @@ class Widget:
     def convertQueries(self, targets, range=True):
         queries = []
         for target in targets:
-            if 'format' in target and target['format'] == 'time_series':
+            #if 'format' in target and target['format'] == 'time_series':
+            if 'expr' in target:
                 queries.append({
                     "accountId": self.conversionService.accountId,
                     "query": self.conversionService.convertQuery(target['expr'], range=range)
