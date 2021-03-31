@@ -48,15 +48,22 @@ class Widget:
 
             elif self.panelType == 'table':
                 self.visualisation = "viz.table"
+            elif self.panelType == 'text':
+                self.visualisation = "viz.markdown"
             else:
                 # No idea what to do with this
                 raise Exception('Unknown type {}'.format(widget))
 
             # Parse queries
             self.rawConfiguration = {}
-            self.rawConfiguration = self.convertQueries(widget['targets'], range=range)
-            if limit:
-                self.rawConfiguration['limit'] = limit
+            if self.panelType == 'text':
+                self.rawConfiguration = {
+                    "text": widget['content']
+                }
+            else:
+                self.rawConfiguration = self.convertQueries(widget['targets'], range=range)
+                if limit:
+                    self.rawConfiguration['limit'] = limit
 
         except Exception as err:
             # Nullify all except Markdown to store error
